@@ -1,0 +1,18 @@
+{
+  "name": "vb-desk",
+  "version": "0.1.0",
+  "description": "Sealed-bid auction smart contract on Solana",
+  "scripts": {
+    "test": "anchor test",
+    "build": "anchor build",
+    "deploy": "anchor deploy"
+  },
+  "dependencies": {
+    "@anchor-lang/anchor": "^0.30.1",
+    "@solana/web3.js": "^1.78.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

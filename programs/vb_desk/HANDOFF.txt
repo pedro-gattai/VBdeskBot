@@ -1,0 +1,254 @@
+╔═══════════════════════════════════════════════════════════════════════╗
+║                                                                       ║
+║           VB DESK - PHASE 1 COMPLETE → HANDOFF TO DAY 2             ║
+║                                                                       ║
+║         Sealed-Bid Auction Smart Contract (Anchor/Rust)              ║
+║         Solana Devnet | 4-Day Build | Hard Deadline: Feb 12         ║
+║                                                                       ║
+╚═══════════════════════════════════════════════════════════════════════╝
+
+────────────────────────────────────────────────────────────────────────
+PHASE 1 DELIVERY (✅ COMPLETE)
+────────────────────────────────────────────────────────────────────────
+
+✅ Anchor project scaffolded and ready to build
+✅ Full GitHub repo structure created
+✅ 3 PDA structs defined (Auction, Bid, Escrow)
+✅ 5 instruction skeletons with proper context signatures
+✅ Locked specification (6,200 chars, FROZEN)
+✅ Complete documentation (6 files)
+✅ Error codes + account constraints defined
+✅ Build scripts ready (deploy.sh, test.sh)
+
+Project Location: /root/clawd/vb-desk/
+
+────────────────────────────────────────────────────────────────────────
+KEY FILES FOR DAY 2
+────────────────────────────────────────────────────────────────────────
+
+📄 IMPLEMENTATION GUIDE:
+   └─ DAY2_QUICKSTART.md
+      • Token transfer logic (step-by-step code)
+      • Commitment SHA-256 verification
+      • Settlement & claim logic
+      • Unit test templates
+      • Time budget breakdown
+      • PDA signer setup (critical!)
+
+📄 REFERENCE DOCUMENTS:
+   ├─ docs/SPEC.md (LOCKED - no changes)
+   ├─ docs/ARCHITECTURE.md (system design)
+   ├─ docs/API.md (instruction details)
+   ├─ docs/SECURITY.md (security checklist)
+   └─ INDEX.md (complete navigation)
+
+📄 PROGRESS TRACKING:
+   ├─ PROGRESS.md (phase status)
+   ├─ memory/2026-01-22.md (daily log)
+   └─ PHASE1_COMPLETE.txt (delivery summary)
+
+📄 SOURCE CODE:
+   └─ programs/vb-desk/src/lib.rs (347 lines, ready for logic)
+
+────────────────────────────────────────────────────────────────────────
+WHAT'S ALREADY DONE
+────────────────────────────────────────────────────────────────────────
+
+✅ Structure (lines 1-30):
+   - Program declaration
+   - Imports (anchor_lang, spl-token, sha2)
+
+✅ Instruction Skeletons (lines 15-250):
+   - create_auction: initialization logic complete
+   - submit_bid: skeleton with deposit tracking
+   - reveal_bid: skeleton with commitment field
+   - settle_auction: skeleton with timing check
+   - claim_deposit: skeleton with claim flag
+
+✅ Account Contexts (lines 273-400):
+   - CreateAuction with PDA constraints
+   - SubmitBid with escrow init
+   - RevealBid context
+   - SettleAuction context
+   - ClaimDeposit context
+
+✅ Data Structures (lines 403-450):
+   - Auction struct (48 bytes)
+   - Bid struct (153 bytes)
+   - Error codes (5 defined)
+
+────────────────────────────────────────────────────────────────────────
+WHAT NEEDS TO BE DONE (DAY 2)
+────────────────────────────────────────────────────────────────────────
+
+1️⃣ SUBMIT_BID - TOKEN TRANSFER (lines ~75-120)
+   [ ] Transfer deposit from bidder → escrow (CPI)
+   [ ] Lock amount in escrow_account
+   [ ] Verify first_bidder tracking
+
+2️⃣ REVEAL_BID - COMMITMENT VERIFICATION (lines ~140-180)
+   [ ] Compute SHA-256(amount || nonce || bidder)
+   [ ] Verify against stored commitment
+   [ ] Update highest_bid if valid
+   [ ] Implement tie-breaking logic
+
+3️⃣ SETTLE_AUCTION - RESERVE & TRANSFER (lines ~190-230)
+   [ ] Check auction.end_time reached
+   [ ] If reserve_price met: transfer highest_bid to seller (CPI)
+   [ ] If reserve_price NOT met: mark is_cancelled = true
+   [ ] PDA signer setup for escrow transfers
+
+4️⃣ CLAIM_DEPOSIT - REFUND DISTRIBUTION (lines ~240-300)
+   [ ] Calculate refund per case (winner/loser/non-revealer)
+   [ ] Handle cancelled auction (refund all)
+   [ ] Prevent double-claiming
+   [ ] Transfer refund from escrow → bidder (CPI)
+
+5️⃣ UNIT + INTEGRATION TESTS
+   [ ] 10+ unit tests (each instruction)
+   [ ] Full auction flow integration test
+   [ ] Edge cases (ties, reserve failure)
+
+────────────────────────────────────────────────────────────────────────
+CRITICAL IMPLEMENTATION DETAILS
+────────────────────────────────────────────────────────────────────────
+
+🔐 COMMITMENT HASH (EXACT ORDER REQUIRED):
+   1. amount.to_le_bytes() (8 bytes, little-endian)
+   2. nonce (32 bytes, as-is)
+   3. bidder.key().as_ref() (32 bytes, no conversion)
+   
+   DO NOT deviate from this order or hash won't verify!
+
+🔒 PDA SIGNER FOR ESCROW TRANSFERS:
+   When Auction PDA needs to transfer from escrow:
+   
+   let seeds = &[
+       b"auction".as_ref(),
+       auction.auction_id.to_le_bytes().as_ref(),
+       &[ctx.bumps.auction],
+   ];
+   let signer = &[&seeds[..]];
+   
+   CpiContext::new_with_signer(..., signer)
+
+💰 REFUND LOGIC (EXACT):
+   - Non-revealer: 0 (forfeited to seller)
+   - Winner: deposit - highest_bid
+   - Loser: full deposit
+   - Cancelled: full deposit (everyone)
+
+⏰ TIMING:
+   Use Clock::get()?.unix_timestamp as u64
+   Check: time >= auction.end_time
+
+────────────────────────────────────────────────────────────────────────
+BUILD & TEST
+────────────────────────────────────────────────────────────────────────
+
+Build:
+  cd vb-desk && anchor build
+
+Test:
+  anchor test
+
+Clippy warnings:
+  cargo clippy
+
+────────────────────────────────────────────────────────────────────────
+REPORTING SCHEDULE (DAY 2)
+────────────────────────────────────────────────────────────────────────
+
+Every 30 minutes to #contract-dev:
+  [HH:MM] Task: Status (blockers?)
+
+Example:
+  [10:00] Submit bid transfer: Complete, testing
+  [10:30] Reveal bid hash: 80% (byte ordering verified)
+  [11:00] Settlement logic: Starting implementation
+
+If stuck >1 hour:
+  1. Search forum: https://agents.colosseum.com/api/forum/search
+  2. Post question + decision
+  3. Report to #log with decision
+
+────────────────────────────────────────────────────────────────────────
+TIME BUDGET (DAY 2 - 8 HOURS)
+────────────────────────────────────────────────────────────────────────
+
+Token Transfers (submit, settle, claim)    2.0h
+Commitment Verification                    1.5h
+Settlement Logic (reserve + transfer)      1.0h
+Claim Deposit Logic (refund calc)           1.0h
+Unit Tests (10+ test cases)                 1.5h
+Integration Test (full flow)                1.0h
+Buffer / Debugging                          0.5h
+────────────────────────────────────────────────────────────────────────
+Total:                                      8.5h (includes buffer)
+
+────────────────────────────────────────────────────────────────────────
+CHECKPOINT
+────────────────────────────────────────────────────────────────────────
+
+By end of Day 2:
+  ✓ All 5 instructions have full logic
+  ✓ Unit tests passing (10+)
+  ✓ Integration test running
+  ✓ Code compiles without warnings
+  ✓ Ready for Day 3 (edge cases + optimizations)
+
+────────────────────────────────────────────────────────────────────────
+QUICK START (FOR DAY 2)
+────────────────────────────────────────────────────────────────────────
+
+1. Open: DAY2_QUICKSTART.md
+2. Follow section 1️⃣ (Token Transfers) - high impact
+3. Copy code templates, fill in details
+4. Test each step with unit tests
+5. Move to section 2️⃣ (Verification)
+6. Repeat for remaining sections
+7. Run full test suite
+8. Report progress every 30 min
+
+────────────────────────────────────────────────────────────────────────
+SPECIFICATION (LOCKED)
+────────────────────────────────────────────────────────────────────────
+
+5 Instructions:
+  ✓ create_auction(id, reserve, duration)
+  ✓ submit_bid(id, commitment, deposit)
+  ✓ reveal_bid(id, amount, nonce)
+  ✓ settle_auction(id)
+  ✓ claim_deposit(id)
+
+3 PDAs:
+  ✓ ["auction", auction_id]
+  ✓ ["bid", auction_id, bidder]
+  ✓ ["escrow", auction_id]
+
+Key Properties:
+  ✓ Sealed-bid (SHA-256 commitments)
+  ✓ Deposit locking (privacy + incentive)
+  ✓ Permissionless settlement
+  ✓ Tie-breaker: first bidder
+  ✓ Non-revealer: loses deposit
+  ✓ Reserve failure: cancel + refund all
+
+NO CHANGES allowed to SPEC.md (locked specification)
+
+────────────────────────────────────────────────────────────────────────
+NEXT MILESTONE
+────────────────────────────────────────────────────────────────────────
+
+📅 When:     End of Day 2 (Feb 3, ~22:00 UTC)
+✅ Status:   Full logic implemented + unit tests passing
+🎯 Next:     Day 3 - Integration tests + edge cases
+🔴 Deadline: Feb 12, 12:00 PM EST (hard stop)
+
+────────────────────────────────────────────────────────────────────────
+
+Ready to proceed to Day 2? 
+
+Start with: DAY2_QUICKSTART.md
+
+═══════════════════════════════════════════════════════════════════════

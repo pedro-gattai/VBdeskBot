@@ -1,0 +1,62 @@
+{
+  "test_wallets": [
+    {
+      "name": "seller",
+      "seed": "test_seller_wallet_seed_phrase_here_for_devnet_only_not_mainnet_do_not_use",
+      "role": "Creates auctions, receives winning bids"
+    },
+    {
+      "name": "bidder_1",
+      "seed": "test_bidder_1_wallet_seed_phrase_here_for_devnet_only_not_mainnet_do_not_use",
+      "role": "Places legitimate bids, reveals to win"
+    },
+    {
+      "name": "bidder_2",
+      "seed": "test_bidder_2_wallet_seed_phrase_here_for_devnet_only_not_mainnet_do_not_use",
+      "role": "Places bids, tests reveal logic"
+    },
+    {
+      "name": "bidder_3",
+      "seed": "test_bidder_3_wallet_seed_phrase_here_for_devnet_only_not_mainnet_do_not_use",
+      "role": "Tests non-reveal edge case (deposit refund)"
+    },
+    {
+      "name": "admin",
+      "seed": "test_admin_wallet_seed_phrase_here_for_devnet_only_not_mainnet_do_not_use",
+      "role": "Admin/protocol wallet (if needed for upgrades)"
+    }
+  ],
+  "test_scenarios": {
+    "happy_path": {
+      "seller": "seller",
+      "bidders": ["bidder_1", "bidder_2"],
+      "description": "Normal auction: create → bid → reveal → settle"
+    },
+    "reveal_failure": {
+      "seller": "seller",
+      "bidders": ["bidder_1", "bidder_3"],
+      "description": "Test deposit refund when bidder doesn't reveal"
+    },
+    "hash_collision": {
+      "seller": "seller",
+      "bidders": ["bidder_1", "bidder_2"],
+      "description": "Test Keccak256 collision resistance with multiple bids"
+    },
+    "reentrancy_test": {
+      "seller": "seller",
+      "bidders": ["bidder_1"],
+      "description": "Attempt reentrancy during settle/claim (should fail)"
+    },
+    "overflow_test": {
+      "seller": "seller",
+      "bidders": ["bidder_1"],
+      "description": "Test arithmetic overflow protection (max bid amounts)"
+    }
+  },
+  "devnet_config": {
+    "rpc_url": "https://api.devnet.solana.com",
+    "airdrop_amount_sol": 2,
+    "min_rent_balance_sol": 0.1,
+    "funding_wallet": "seller"
+  }
+}

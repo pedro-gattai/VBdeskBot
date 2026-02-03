@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+target/
+Cargo.lock
+
+# Build artifacts
+.anchor/
+dist/
+build/
+*.wasm
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Internal/Working files (MoltWorker)
+AGENTS.md
+BOOTSTRAP.md
+COORDINATION.md
+DISCORD_POST_TEMPLATE.md
+HEARTBEAT.md
+IDENTITY.md
+MEMORY.md
+PROGRESS.md
+SOUL.md
+TOOLS.md
+USER.md
+VB_DESK_MASTER_PLAN.md
+canvas/
+memory/
+skills/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
