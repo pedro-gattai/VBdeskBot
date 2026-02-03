@@ -39,30 +39,50 @@ export function AuctionDetail({ auctionId }: { auctionId: string }) {
   const hoursLeft = Math.floor(timeRemaining / 3600000);
   const minutesLeft = Math.floor((timeRemaining % 3600000) / 60000);
 
+  const isAuctionEnded = timeRemaining === 0;
+
   return (
-    <div className="bg-slate-700 rounded-lg p-8 border border-slate-600">
-      <h1 className="text-4xl font-bold text-white mb-4">{auction.title}</h1>
-      <p className="text-slate-300 text-lg mb-6">{auction.description}</p>
+    <div className="card-dark">
+      <div className="mb-6">
+        <h1 className="text-4xl font-bold text-white mb-2">{auction.title}</h1>
+        <p className="text-slate-300 text-lg">{auction.description}</p>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-        <div className="bg-slate-800 rounded-lg p-6">
-          <p className="text-slate-400 text-sm mb-2">Current Bid</p>
-          <p className="text-white font-bold text-3xl mb-4">{auction.currentBid} SOL</p>
-          <p className="text-slate-400 text-sm">Time Remaining</p>
-          <p className="text-white font-bold text-xl">
-            {hoursLeft}h {minutesLeft}m
-          </p>
+        <div className="bg-slate-800 rounded-lg p-6 border border-slate-700">
+          <div className="space-y-6">
+            <div>
+              <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">Current Bid</p>
+              <p className="text-white font-bold text-4xl">{auction.currentBid}</p>
+              <p className="text-slate-400 text-sm">SOL</p>
+            </div>
+            
+            <div className={`rounded-lg p-4 ${isAuctionEnded ? 'bg-red-500/10' : 'bg-blue-500/10'}`}>
+              <p className={`text-xs uppercase tracking-wide mb-1 ${isAuctionEnded ? 'text-red-300' : 'text-slate-400'}`}>
+                {isAuctionEnded ? "Auction Ended" : "Time Remaining"}
+              </p>
+              <p className={`font-bold text-2xl ${isAuctionEnded ? 'text-red-300' : 'text-white'}`}>
+                {isAuctionEnded ? "Ended" : `${hoursLeft}h ${minutesLeft}m`}
+              </p>
+            </div>
+          </div>
         </div>
 
-        <div className="bg-slate-800 rounded-lg p-6">
-          <h3 className="text-white font-semibold mb-4">Recent Bids</h3>
-          <div className="space-y-2">
-            {auction.bids.map((bid, idx) => (
-              <div key={idx} className="flex justify-between text-sm">
-                <span className="text-slate-300">{bid.bidder}</span>
-                <span className="text-white font-semibold">{bid.amount} SOL</span>
-              </div>
-            ))}
+        <div className="bg-slate-800 rounded-lg p-6 border border-slate-700">
+          <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
+            📊 Recent Bids
+          </h3>
+          <div className="space-y-3 max-h-48 overflow-y-auto">
+            {auction.bids.length > 0 ? (
+              auction.bids.map((bid, idx) => (
+                <div key={idx} className="flex justify-between items-center p-3 bg-slate-700/50 rounded border border-slate-600">
+                  <span className="text-slate-300 text-sm font-mono">{bid.bidder}</span>
+                  <span className="text-white font-semibold">{bid.amount} SOL</span>
+                </div>
+              ))
+            ) : (
+              <p className="text-slate-400 text-sm">No bids yet</p>
+            )}
           </div>
         </div>
       </div>
