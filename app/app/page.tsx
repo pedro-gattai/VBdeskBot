@@ -1,8 +1,6 @@
 import { Navbar } from "@/components/Navbar";
 import { AuctionList } from "@/components/AuctionList";
 
-export const runtime = 'edge';
-
 export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
