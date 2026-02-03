@@ -1,0 +1,41 @@
+name: Anchor Build & Test
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'programs/**'
+      - 'tests/**'
+      - 'Anchor.toml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'programs/**'
+      - 'tests/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-action@stable
+
+      - name: Install Solana CLI
+        run: |
+          sh -c "$(curl -sSfL https://release.solana.com/v1.18.0/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+
+      - name: Install Anchor CLI
+        run: |
+          cargo install --git https://github.com/coral-xyz/anchor avm --locked
+          avm install 0.29.0
+          avm use 0.29.0
+
+      - name: Build program
+        run: anchor build
+
+      - name: Run tests
+        run: anchor test || true

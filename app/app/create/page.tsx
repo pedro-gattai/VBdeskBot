@@ -1,5 +1,7 @@
 "use client";
 
+export const runtime = 'edge';
+
 import { Navbar } from "@/components/Navbar";
 import { CreateAuctionForm } from "@/components/CreateAuctionForm";
 
