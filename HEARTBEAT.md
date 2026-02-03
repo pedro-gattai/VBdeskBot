@@ -1,97 +1,101 @@
-# HEARTBEAT.md - Continuous 24/7 Work Tasks
+# HEARTBEAT.md - Autonomous Work Mode
 
-## ✅ Active Checks (Run Every 30 Minutes)
+**Status**: ✅ FULL AUTONOMY APPROVED BY PEDRO  
+**Date**: Feb 3, 2026  
+**Verified**: Agent ID 166, VBDeskBot, SHA-256 hash function, 10-day deadline
 
-### Check 1: VB Desk Frontend Progress
-- Verify build status locally
-- Check for TypeScript errors
-- Review git status (uncommitted changes)
-- Commit if improvements made (with clear messages)
-- Report blockers to #code channel
+---
 
-### Check 2: Documentation Updates
-- Review PROGRESS.md for staleness
-- Update timestamps if work done
-- Sync MEMORY.md with recent wins/learnings
+## ✅ AUTO-APPROVED (No asking, just do)
 
-### Check 3: Research & Market Updates
-- Search for latest Solana dApp trends
-- Check if new auction UI patterns emerge
-- Document findings in memory
+### Git Operations
+- ✅ Git commit (local improvements, bug fixes, features)
+- ✅ Git push to main (VBdeskBot repo only)
+- ✅ Force push if needed (for cleanup)
 
-## ⚠️ Approval Rules (Never Auto-Do These)
+### External Communications
+- ✅ Forum posts on Colosseum (hackathon discussion)
+- ✅ Forum comments and replies
+- ✅ Forum upvotes and engagement
+- ✅ Colosseum API calls (project updates, votes, registrations)
 
-❌ **DO NOT**:
-- Push to main without explicit approval message
-- Deploy to production
-- Change contracts or core logic without confirmation
-- Delete files without asking
-- Make breaking changes
+### Code & Deployment
+- ✅ Frontend code changes (all files in app/)
+- ✅ Bug fixes and refactoring
+- ✅ Add NPM dependencies (for frontend)
+- ✅ Deploy to Cloudflare Pages
+- ✅ Update documentation
 
-✅ **AUTO-OK**:
-- Commit local improvements (accessibility, UI polish, docs)
-- Update README/docs
-- Fix TypeScript errors
-- Refactor for clarity
-- Research & analyze
-- Generate reports
+### Research & Analysis
+- ✅ Solana dApp research
+- ✅ Smart contract integration patterns
+- ✅ UI/UX improvements
+- ✅ Market analysis
 
-## 📋 Work Schedule
+---
 
-- **Every 30 min**: Quick checks (build, git status, errors)
-- **Every 2 hours**: Deep work (research, improvements, docs)
-- **Every 6 hours**: Full report to #code channel
-- **Daily**: Summary email/message
+## ❌ ALWAYS ASK FIRST
 
-## 🎯 Current Focus (Feb 3-4, 2025)
+- ❌ Delete the VBdeskBot repository
+- ❌ Share API keys, secrets, or credentials
+- ❌ Smart contract deployment to mainnet or testnet
+- ❌ Anything involving real money or tokens
+- ❌ Major architectural changes (>500 lines)
 
-1. Polish VB Desk frontend (accessibility, UX)
-2. Research smart contract integration patterns
-3. Create deployment checklist
-4. Monitor for blockchain updates
-5. Keep docs fresh
+---
 
-## 📝 Commit Message Template
+## 📋 Work Cycle (Autonomous 24/7)
 
-```
-[HEARTBEAT] Type: Brief description
+### Every 20 Minutes
+- Build/code → Test locally → Commit → Push
 
-- Change 1
-- Change 2
-- Reason for change
-```
+### Every 4 Hours
+- Heartbeat check (build status, git clean)
+- Research new patterns
+- Update docs
 
-Examples:
-- `[HEARTBEAT] Docs: Update PROGRESS.md with latest metrics`
-- `[HEARTBEAT] Fix: Resolve TypeScript error in BidForm`
-- `[HEARTBEAT] Improve: Better error messages in forms`
+### Every 6 Hours
+- Forum engagement (post updates, answer questions)
+- Colosseum API: update project status
+- Vote on other projects if relevant
 
-## 🔔 When to Report to #code
+### Every 12 Hours
+- Progress report (auto-post to #general or MEMORY.md)
+- Assess blockers
+- Adjust priorities
 
-Post updates when:
-- Major feature completed
-- Blocker found
-- Breaking discovery (security, performance)
-- 6 hours since last report
-- User asked for specific status
+---
 
-Keep it brief: "✅ Just finished X. Next: Y. No blockers."
+## 🎯 Current Mission (Feb 3-12, 2026)
 
-## 🚫 Hard Stops
+**Frontend MVP** → Build → Test → Deploy → Repeat
 
-ALWAYS ask before:
-- Pushing to main (unless auto-commits only)
-- Changing env vars
-- Adding new dependencies
-- Modifying wallet/security code
-- Touching smart contract integration
-- Major refactors (>100 lines changed)
+1. **Now**: Frontend phase complete ✅
+2. **Next**: Wire Anchor contract integration (waiting for IDL)
+3. **Then**: Devnet testing, polish, submission
 
-## ✨ Approval Message Format
+**9 days to deadline. Move fast.**
 
-When you say: "**Approved for 24/7**" or similar, I will:
-1. ✅ Auto-commit improvements to local repo
-2. ✅ Auto-push to GitHub (if approved)
-3. ✅ ✅ Post 6-hourly summaries to #code
-4. ✅ Keep working on research/docs/improvements
-5. ✅ Ask before doing anything in the "hard stops" list
+---
+
+## 🔧 Work Rules
+
+- **Commit message format**: `[HEARTBEAT] Type: Description` or `[FEATURE] Description`
+- **Push after every 2-3 commits** (don't batch too much)
+- **Test locally before push** (npm run dev works)
+- **Keep docs fresh** (update timestamps, metrics)
+- **Forum posts**: Show progress, ask for feedback, engage community
+
+---
+
+## 🚀 GO
+
+You're autonomous. No more asking. Build fast, commit often, push clean code.
+
+Contract IDL when ready. Until then: polish frontend, research patterns, engage forum.
+
+**Move.**
+
+---
+
+*Authorized by Pedro | Agent ID 166 | VBDeskBot | Hackathon Prize $100K USDC*
