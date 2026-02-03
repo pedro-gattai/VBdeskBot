@@ -56,35 +56,40 @@ export function CreateAuctionForm() {
 
       <div className="space-y-6">
         <div>
-          <label className="block text-slate-300 text-sm font-medium mb-2">Auction Title</label>
+          <label htmlFor="title" className="block text-slate-300 text-sm font-medium mb-2">Auction Title</label>
           <input
+            id="title"
             type="text"
             name="title"
             value={formData.title}
             onChange={handleChange}
             placeholder="e.g., Rare NFT Collection"
-            className="w-full bg-slate-800 text-white rounded px-4 py-2 border border-slate-600 focus:border-blue-500 focus:outline-none"
+            aria-label="Auction title"
+            className="input-field"
             disabled={!connected || isLoading}
           />
         </div>
 
         <div>
-          <label className="block text-slate-300 text-sm font-medium mb-2">Description</label>
+          <label htmlFor="description" className="block text-slate-300 text-sm font-medium mb-2">Description</label>
           <textarea
+            id="description"
             name="description"
             value={formData.description}
             onChange={handleChange}
             placeholder="Describe your auction item..."
             rows={4}
-            className="w-full bg-slate-800 text-white rounded px-4 py-2 border border-slate-600 focus:border-blue-500 focus:outline-none resize-none"
+            aria-label="Auction description"
+            className="input-field resize-none"
             disabled={!connected || isLoading}
           />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-slate-300 text-sm font-medium mb-2">Starting Bid (SOL)</label>
+            <label htmlFor="starting-bid" className="block text-slate-300 text-sm font-medium mb-2">Starting Bid (SOL)</label>
             <input
+              id="starting-bid"
               type="number"
               name="startingBid"
               step="0.01"
@@ -92,18 +97,21 @@ export function CreateAuctionForm() {
               value={formData.startingBid}
               onChange={handleChange}
               placeholder="0.00"
-              className="w-full bg-slate-800 text-white rounded px-4 py-2 border border-slate-600 focus:border-blue-500 focus:outline-none"
+              aria-label="Starting bid in SOL"
+              className="input-field"
               disabled={!connected || isLoading}
             />
           </div>
 
           <div>
-            <label className="block text-slate-300 text-sm font-medium mb-2">Duration (Hours)</label>
+            <label htmlFor="duration" className="block text-slate-300 text-sm font-medium mb-2">Duration (Hours)</label>
             <select
+              id="duration"
               name="durationHours"
               value={formData.durationHours}
               onChange={handleChange}
-              className="w-full bg-slate-800 text-white rounded px-4 py-2 border border-slate-600 focus:border-blue-500 focus:outline-none"
+              aria-label="Auction duration"
+              className="input-field"
               disabled={!connected || isLoading}
             >
               <option value="24">24 hours</option>
@@ -117,7 +125,8 @@ export function CreateAuctionForm() {
         <button
           type="submit"
           disabled={!connected || isLoading}
-          className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold py-3 rounded transition"
+          aria-busy={isLoading}
+          className="w-full btn-primary py-3"
         >
           {isLoading ? "Creating..." : "Create Auction"}
         </button>

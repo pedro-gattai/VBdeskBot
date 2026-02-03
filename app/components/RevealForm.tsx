@@ -57,27 +57,31 @@ export function RevealForm({ auctionId }: { auctionId: string }) {
 
       <div className="space-y-4">
         <div>
-          <label className="block text-slate-300 text-sm mb-2">Bid Amount (SOL)</label>
+          <label htmlFor="reveal-amount" className="block text-slate-300 text-sm font-medium mb-2">Bid Amount (SOL)</label>
           <input
+            id="reveal-amount"
             type="number"
             step="0.01"
             min="0"
             value={bidAmount}
             onChange={(e) => setBidAmount(e.target.value)}
             placeholder="Your actual bid amount"
-            className="w-full bg-slate-800 text-white rounded px-4 py-2 border border-slate-600 focus:border-blue-500 focus:outline-none"
+            aria-label="Bid amount to reveal"
+            className="input-field"
             disabled={!connected || isLoading}
           />
         </div>
 
         <div>
-          <label className="block text-slate-300 text-sm mb-2">Nonce</label>
+          <label htmlFor="nonce" className="block text-slate-300 text-sm font-medium mb-2">Nonce</label>
           <input
+            id="nonce"
             type="text"
             value={nonce}
             onChange={(e) => setNonce(e.target.value)}
             placeholder="Your secret nonce"
-            className="w-full bg-slate-800 text-white rounded px-4 py-2 border border-slate-600 focus:border-blue-500 focus:outline-none"
+            aria-label="Secret nonce used in bid"
+            className="input-field"
             disabled={!connected || isLoading}
           />
           <p className="text-slate-400 text-xs mt-1">Must match the nonce used when placing bid</p>
@@ -86,6 +90,7 @@ export function RevealForm({ auctionId }: { auctionId: string }) {
         <button
           type="submit"
           disabled={!connected || isLoading}
+          aria-busy={isLoading}
           className="w-full bg-green-600 hover:bg-green-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold py-2 rounded transition"
         >
           {isLoading ? "Revealing..." : "Reveal Bid"}

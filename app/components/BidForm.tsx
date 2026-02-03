@@ -49,15 +49,17 @@ export function BidForm({ auctionId }: { auctionId: string }) {
 
       <div className="space-y-4">
         <div>
-          <label className="block text-slate-300 text-sm mb-2">Bid Amount (SOL)</label>
+          <label htmlFor="bid-amount" className="block text-slate-300 text-sm font-medium mb-2">Bid Amount (SOL)</label>
           <input
+            id="bid-amount"
             type="number"
             step="0.01"
             min="0"
             value={bidAmount}
             onChange={(e) => setBidAmount(e.target.value)}
             placeholder="Enter amount"
-            className="w-full bg-slate-800 text-white rounded px-4 py-2 border border-slate-600 focus:border-blue-500 focus:outline-none"
+            aria-label="Bid amount in SOL"
+            className="input-field"
             disabled={!connected || isLoading}
           />
         </div>
@@ -65,7 +67,8 @@ export function BidForm({ auctionId }: { auctionId: string }) {
         <button
           type="submit"
           disabled={!connected || isLoading}
-          className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold py-2 rounded transition"
+          aria-busy={isLoading}
+          className="w-full btn-primary"
         >
           {isLoading ? "Submitting..." : "Place Bid"}
         </button>
