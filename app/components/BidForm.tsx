@@ -3,15 +3,17 @@
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useState } from "react";
 import { generateNonce, formatSol } from "@/utils/crypto";
+import { useTransaction } from "@/hooks/useTransaction";
+import { TransactionStatus } from "./TransactionStatus";
 
 export function BidForm({ auctionId }: { auctionId: string }) {
   const { connected, publicKey, signMessage } = useWallet();
   const [bidAmount, setBidAmount] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState<'success' | 'error' | 'info' | null>(null);
   const [nonce, setNonce] = useState("");
   const [showNonce, setShowNonce] = useState(false);
+  const tx = useTransaction();
 
   const handleGenerateNonce = () => {
     const generatedNonce = generateNonce(16);
@@ -41,28 +43,31 @@ export function BidForm({ auctionId }: { auctionId: string }) {
       return;
     }
 
-    setIsLoading(true);
-    try {
-      // This will be connected to the actual smart contract
-      const messageData = new TextEncoder().encode(
-        `Bid ${bidAmount} SOL on auction ${auctionId}`
-      );
-      const signature = await signMessage(messageData);
-      console.log("Signed bid:", signature);
-      console.log("Nonce:", nonce);
-      
-      setMessage("✅ Bid submitted successfully!");
-      setMessageType('success');
+    // Execute transaction with status tracking
+    await tx.execute(
+      async () => {
+        // This will be connected to the actual smart contract
+        const messageData = new TextEncoder().encode(
+          `Bid ${bidAmount} SOL on auction ${auctionId}`
+        );
+        const signature = await signMessage(messageData);
+        console.log("Signed bid:", signature);
+        console.log("Nonce:", nonce);
+        return signature.toString();
+      },
+      {
+        pendingMessage: `Submitting bid of ${bidAmount} SOL...`,
+        successMessage: `Bid submitted successfully!`,
+      }
+    );
+
+    // Reset form on success
+    if (tx.status === 'confirmed') {
       setBidAmount("");
       setNonce("");
       setShowNonce(false);
-    } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : "Failed to submit bid";
-      setMessage(errorMsg);
-      setMessageType('error');
-      console.error(error);
-    } finally {
-      setIsLoading(false);
+      setMessage("");
+      setMessageType(null);
     }
   };
 
@@ -96,7 +101,7 @@ export function BidForm({ auctionId }: { auctionId: string }) {
             placeholder="5.0"
             aria-label="Bid amount in SOL"
             className="input-field text-lg font-semibold"
-            disabled={!connected || isLoading}
+            disabled={!connected || tx.status === 'pending'}
           />
           {bidAmount && (
             <p className="text-slate-400 text-xs mt-1">= {formatSol(parseFloat(bidAmount))}</p>
@@ -112,7 +117,7 @@ export function BidForm({ auctionId }: { auctionId: string }) {
             <button
               type="button"
               onClick={handleGenerateNonce}
-              disabled={isLoading || !connected}
+              disabled={tx.status === 'pending' || !connected}
               className="text-blue-400 hover:text-blue-300 text-xs font-semibold transition"
             >
               {nonce ? "Regenerate" : "Generate"}
@@ -134,11 +139,11 @@ export function BidForm({ auctionId }: { auctionId: string }) {
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={!connected || isLoading || !nonce}
-          aria-busy={isLoading}
+          disabled={!connected || tx.status === 'pending' || !nonce}
+          aria-busy={tx.status === 'pending'}
           className="w-full btn-primary py-3 font-semibold text-lg"
         >
-          {isLoading ? "⏳ Submitting bid..." : "Place Sealed Bid"}
+          {tx.status === 'pending' ? "⏳ Submitting bid..." : "Place Sealed Bid"}
         </button>
       </div>
 
@@ -165,6 +170,15 @@ export function BidForm({ auctionId }: { auctionId: string }) {
           </p>
         </div>
       )}
+
+      {/* Transaction Status Modal */}
+      <TransactionStatus
+        status={tx.status}
+        txId={tx.txId}
+        message={tx.message}
+        errorMessage={tx.errorMessage}
+        onDismiss={tx.reset}
+      />
     </form>
   );
 }
