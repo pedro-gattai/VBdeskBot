@@ -41,14 +41,27 @@ export function AuctionList() {
   }, []);
 
   if (loading) {
-    return <div className="text-white">Loading auctions...</div>;
+    return <div className="text-white text-center py-12">⏳ Loading auctions...</div>;
+  }
+
+  if (auctions.length === 0) {
+    return (
+      <div className="text-center py-12" role="status">
+        <p className="text-slate-400 text-lg">No active auctions yet.</p>
+        <p className="text-slate-500 text-sm mt-2">
+          <Link href="/create" className="text-blue-400 hover:text-blue-300 font-semibold">
+            Create one to get started →
+          </Link>
+        </p>
+      </div>
+    );
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" role="region" aria-label="Active auctions">
       {auctions.map((auction) => (
-        <Link key={auction.id} href={`/auction/${auction.id}`} className="group">
-          <div className="card-dark group-hover:bg-slate-600 group-hover:border-blue-500 transition-all duration-200 cursor-pointer transform group-hover:-translate-y-1">
+        <article key={auction.id} className="group">
+          <Link href={`/auction/${auction.id}`} className="card-dark group-hover:bg-slate-600 group-hover:border-blue-500 transition-all duration-200 cursor-pointer transform group-hover:-translate-y-1 block">
             <div className="flex justify-between items-start mb-4">
               <h3 className="text-white font-semibold text-lg group-hover:text-blue-300 transition">{auction.title}</h3>
               <span className={`status-badge ${
@@ -71,8 +84,8 @@ export function AuctionList() {
                 ⏱️ {Math.floor((auction.endTime - Date.now()) / 3600000)}h remaining
               </p>
             </div>
-          </div>
-        </Link>
+          </Link>
+        </article>
       ))}
     </div>
   );

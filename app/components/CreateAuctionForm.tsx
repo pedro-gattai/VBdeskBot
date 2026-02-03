@@ -13,6 +13,7 @@ export function CreateAuctionForm() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState<'success' | 'error' | 'info' | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -22,26 +23,34 @@ export function CreateAuctionForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!connected || !publicKey || !signMessage) {
-      setMessage("Please connect your Phantom wallet");
+      setMessage("📱 Please connect your Phantom wallet first");
+      setMessageType('error');
       return;
     }
 
     if (!formData.title || !formData.description || !formData.startingBid) {
-      setMessage("Please fill in all fields");
+      setMessage("❌ Please fill in all required fields");
+      setMessageType('error');
       return;
     }
 
     setIsLoading(true);
+    setMessage("");
+    setMessageType(null);
+
     try {
       const messageData = new TextEncoder().encode(
         `Create auction: ${formData.title} starting at ${formData.startingBid} SOL`
       );
       const signature = await signMessage(messageData);
       console.log("Auction created:", signature);
-      setMessage("Auction created successfully!");
+      setMessage("✅ Auction created successfully!");
+      setMessageType('success');
       setFormData({ title: "", description: "", startingBid: "", durationHours: "24" });
     } catch (error) {
-      setMessage("Failed to create auction");
+      const errorMsg = error instanceof Error ? error.message : "Failed to create auction";
+      setMessage(`❌ ${errorMsg}`);
+      setMessageType('error');
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -133,9 +142,15 @@ export function CreateAuctionForm() {
       </div>
 
       {message && (
-        <p className={`text-sm mt-6 ${message.includes("successfully") ? "text-green-300" : "text-red-300"}`}>
+        <div className={`text-sm mt-6 p-3 rounded border ${
+          messageType === 'success'
+            ? 'bg-green-500/10 border-green-500/30 text-green-300'
+            : messageType === 'error'
+            ? 'bg-red-500/10 border-red-500/30 text-red-300'
+            : 'bg-blue-500/10 border-blue-500/30 text-blue-300'
+        }`}>
           {message}
-        </p>
+        </div>
       )}
     </form>
   );
