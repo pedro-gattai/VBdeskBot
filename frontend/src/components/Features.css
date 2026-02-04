@@ -1,0 +1,146 @@
+/* Features Section */
+
+.features-section {
+  padding: var(--space-2xl) 0;
+  margin: var(--space-2xl) 0;
+}
+
+.features-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto var(--space-2xl);
+}
+
+.features-header h2 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-bottom: var(--space-md);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.features-subtitle {
+  font-size: 1.125rem;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-xl);
+  margin-bottom: var(--space-2xl);
+}
+
+.feature-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  transition: all var(--transition-base);
+  text-align: center;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-primary);
+  box-shadow: 0 12px 32px rgba(153, 69, 255, 0.2);
+}
+
+.feature-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-lg);
+  display: inline-block;
+  animation: float 3s ease-in-out infinite;
+}
+
+.feature-card:nth-child(1) .feature-icon {
+  animation-delay: 0s;
+}
+
+.feature-card:nth-child(2) .feature-icon {
+  animation-delay: 0.5s;
+}
+
+.feature-card:nth-child(3) .feature-icon {
+  animation-delay: 1s;
+}
+
+.feature-card:nth-child(4) .feature-icon {
+  animation-delay: 1.5s;
+}
+
+.feature-card:nth-child(5) .feature-icon {
+  animation-delay: 2s;
+}
+
+.feature-card:nth-child(6) .feature-icon {
+  animation-delay: 2.5s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.feature-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+  color: var(--color-text-primary);
+}
+
+.feature-description {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  margin-bottom: 0;
+}
+
+.features-cta {
+  text-align: center;
+  padding: var(--space-2xl);
+  background: linear-gradient(135deg, rgba(153, 69, 255, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  margin-top: var(--space-2xl);
+}
+
+.features-cta h3 {
+  font-size: 1.75rem;
+  margin-bottom: var(--space-sm);
+  color: var(--color-primary);
+}
+
+.features-cta p {
+  font-size: 1.125rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .features-cta {
+    padding: var(--space-xl);
+  }
+}
+
+/* Accessibility - Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .feature-icon {
+    animation: none;
+  }
+  
+  .feature-card:hover {
+    transform: none;
+  }
+}
