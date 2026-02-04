@@ -4,8 +4,7 @@ import { WalletConnect } from './components/WalletConnect'
 import { AuctionList } from './components/AuctionList'
 import { CreateAuctionForm } from './components/CreateAuctionForm'
 import { ToastProvider } from './components/ToastProvider'
-import { Features } from './components/Features'
-import { Stats } from './components/Stats'
+import { LandingPage } from './components/LandingPage'
 import './App.css'
 
 type View = 'auctions' | 'create'
@@ -48,28 +47,7 @@ function App() {
 
         <main className="app-main">
           {!connected ? (
-            <>
-              <div className="connect-prompt">
-                <div className="prompt-card">
-                  <h2>Welcome to VB Desk</h2>
-                  <p>
-                    A decentralized auction platform using Vickrey-Boneh sealed-bid 
-                    auction protocol for privacy-preserving bidding on Solana.
-                  </p>
-                  <h3>How it works:</h3>
-                  <ol>
-                    <li><strong>Commit Phase:</strong> Bidders submit encrypted bids using cryptographic commitments (SHA-256 hash)</li>
-                    <li><strong>Reveal Phase:</strong> Bidders reveal their actual bids with their secret nonce</li>
-                    <li><strong>Winner Selection:</strong> Highest bidder wins, pays second-highest price (incentive-compatible)</li>
-                  </ol>
-                  <p className="connect-instruction">
-                    Connect your wallet to get started →
-                  </p>
-                </div>
-              </div>
-              <Stats />
-              <Features />
-            </>
+            <LandingPage />
           ) : (
             <>
               {currentView === 'auctions' && <AuctionList />}
