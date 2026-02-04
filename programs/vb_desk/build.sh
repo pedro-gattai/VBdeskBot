@@ -18,7 +18,7 @@ echo ""
 cd "$(dirname "$0")"
 
 echo "🔨 Building VB Desk Anchor program..."
-anchor build
+cargo +nightly build-bpf
 
 echo ""
 echo "✅ Build complete!"

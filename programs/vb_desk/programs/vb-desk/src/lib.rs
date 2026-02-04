@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Token, TokenAccount, Transfer};
 use sha2::{Sha256, Digest};
 
-declare_id!("GHMkvLYFpn5DN1LPPax94e2HdmAp6CFV17fgbHXYHSnF");
+declare_id!("MUTAAkntHuUDnEZ1fouwiy3smraiv3mrKgZpSiapne1");
 
 /// VB Desk - Sealed-bid Auction Smart Contract
 /// Implements 5 core instructions for conducting sealed-bid auctions on Solana
@@ -91,9 +91,8 @@ pub mod vb_desk {
         hasher.update(ctx.accounts.bidder.key().as_ref());
         let computed_commitment = hasher.finalize();
         
-        require_eq!(
-            computed_commitment.as_slice(),
-            &bid.commitment,
+        require!(
+            computed_commitment.as_slice() == &bid.commitment,
             AuctionError::InvalidCommitment
         );
 
@@ -157,13 +156,12 @@ pub mod vb_desk {
         auction_id: u64,
     ) -> Result<()> {
         let auction = &ctx.accounts.auction;
-        let bid = &ctx.accounts.bid;
+        let bid = &mut ctx.accounts.bid;
 
         require!(auction.is_settled, AuctionError::AuctionNotSettled);
         require!(!bid.claim_processed, AuctionError::AlreadyClaimed);
 
-        let bid_mut = &mut ctx.accounts.bid;
-        bid_mut.claim_processed = true;
+        bid.claim_processed = true;
 
         // Determine refund amount
         let refund_amount = if !bid.is_revealed {
@@ -195,12 +193,14 @@ pub mod vb_desk {
 pub struct CreateAuction<'info> {
     #[account(
         init,
-        pda = [b"auction", auction_id.to_le_bytes().as_ref()],
+        payer = seller,
         space = 8 + Auction::SPACE,
+        seeds = [b"auction", auction_id.to_le_bytes().as_ref()],
         bump
     )]
     pub auction: Account<'info, Auction>,
 
+    #[account(mut)]
     pub seller: Signer<'info>,
     pub mint: Account<'info, anchor_spl::token::Mint>,
 
@@ -220,17 +220,19 @@ pub struct SubmitBid<'info> {
 
     #[account(
         init,
-        pda = [b"bid", auction_id.to_le_bytes().as_ref(), bidder.key().as_ref()],
+        payer = bidder,
         space = 8 + Bid::SPACE,
+        seeds = [b"bid", auction_id.to_le_bytes().as_ref(), bidder.key().as_ref()],
         bump
     )]
     pub bid: Account<'info, Bid>,
 
     #[account(
         init_if_needed,
-        pda = [b"escrow", auction_id.to_le_bytes().as_ref()],
+        payer = bidder,
         token::mint = mint,
         token::authority = auction,
+        seeds = [b"escrow", auction_id.to_le_bytes().as_ref()],
         bump
     )]
     pub escrow_account: Account<'info, TokenAccount>,
@@ -240,6 +242,7 @@ pub struct SubmitBid<'info> {
     #[account(mut)]
     pub bidder_token_account: Account<'info, TokenAccount>,
     
+    #[account(mut)]
     pub bidder: Signer<'info>,
 
     pub token_program: Program<'info, Token>,

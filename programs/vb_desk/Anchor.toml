@@ -6,7 +6,7 @@ resolution = true
 skip-lint = false
 
 [programs.devnet]
-vb_desk = "GHMkvLYFpn5DN1LPPax94e2HdmAp6CFV17fgbHXYHSnF"
+vb_desk = "MUTAAkntHuUDnEZ1fouwiy3smraiv3mrKgZpSiapne1"
 
 [registry]
 url = "https://api.apr.dev"
