@@ -1,34 +1,47 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import type { FC } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { toast } from 'react-toastify';
 
 /**
  * WalletConnect component for connecting to a Solana wallet.
  */
 export const WalletConnect: FC = () => {
-  const [connecting, setConnecting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { connecting, connected, disconnecting, wallet, publicKey } = useWallet();
 
-  const handleConnect = async () => {
-    setConnecting(true);
-    setError(null);
-    try {
-      // Simulate wallet connection (replace with actual connection logic)
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log('Wallet connected successfully!');
-    } catch (e: any) {
-      console.error('Failed to connect wallet:', e);
-      setError(e.message || 'Failed to connect wallet.');
-    } finally {
-      setConnecting(false);
+  useEffect(() => {
+    if (connected && publicKey) {
+      const address = publicKey.toString();
+      const shortAddress = `${address.slice(0, 4)}...${address.slice(-4)}`;
+      toast.success(`🎉 Wallet connected: ${shortAddress}`, {
+        autoClose: 3000,
+      });
     }
-  };
+  }, [connected, publicKey]);
+
+  useEffect(() => {
+    if (disconnecting) {
+      toast.info('Disconnecting wallet...', {
+        autoClose: 2000,
+      });
+    }
+  }, [disconnecting]);
 
   return (
     <div className="wallet-connect">
-      <WalletMultiButton onClick={handleConnect} disabled={connecting} />
-      {connecting && <p>Connecting...</p>}
-      {error && <p style={{ color: 'red' }}>Error: {error}</p>}
+      {connecting && (
+        <div className="text-secondary" style={{ marginRight: 'var(--space-md)', fontSize: '0.875rem' }}>
+          <span className="spinner spinner-small" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: 'var(--space-xs)' }}></span>
+          Connecting...
+        </div>
+      )}
+      <WalletMultiButton />
+      {connected && wallet && (
+        <div style={{ fontSize: '0.75rem', color: 'var(--color-text-tertiary)', marginTop: 'var(--space-xs)' }}>
+          {wallet.adapter.name}
+        </div>
+      )}
     </div>
   );
 };

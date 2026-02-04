@@ -1,0 +1,54 @@
+/* Custom Toast Styles */
+.Toastify__toast-container {
+  font-family: inherit;
+}
+
+.Toastify__toast {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  color: var(--color-text-primary);
+  padding: var(--space-lg);
+}
+
+.Toastify__toast--success {
+  border-left: 4px solid var(--color-success);
+}
+
+.Toastify__toast--error {
+  border-left: 4px solid var(--color-error);
+}
+
+.Toastify__toast--warning {
+  border-left: 4px solid var(--color-warning);
+}
+
+.Toastify__toast--info {
+  border-left: 4px solid var(--color-info);
+}
+
+.Toastify__progress-bar {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+}
+
+.Toastify__toast--success .Toastify__progress-bar {
+  background: var(--color-success);
+}
+
+.Toastify__toast--error .Toastify__progress-bar {
+  background: var(--color-error);
+}
+
+.Toastify__toast--warning .Toastify__progress-bar {
+  background: var(--color-warning);
+}
+
+.Toastify__close-button {
+  color: var(--color-text-tertiary);
+  opacity: 1;
+}
+
+.Toastify__close-button:hover {
+  color: var(--color-text-primary);
+}

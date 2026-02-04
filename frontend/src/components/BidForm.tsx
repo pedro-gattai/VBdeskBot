@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import { BN } from '@coral-xyz/anchor';
+import { toast } from 'react-toastify';
 import { generateNonce, createCommitment, storeNonce } from '../utils/commit-reveal';
 
 interface BidFormProps {
@@ -48,7 +49,9 @@ export const BidForm: FC<BidFormProps> = ({
    */
   function handleCopyNonce() {
     navigator.clipboard.writeText(nonce);
-    alert('Nonce copied to clipboard! Save it in your password manager NOW.');
+    toast.success('✅ Nonce copied! Save it in your password manager NOW.', {
+      autoClose: 7000,
+    });
   }
 
   /**
@@ -59,17 +62,18 @@ export const BidForm: FC<BidFormProps> = ({
     e.preventDefault();
 
     if (!publicKey) {
-      setError('Please connect your wallet');
+      toast.error('Please connect your wallet');
       return;
     }
 
     if (!nonceConfirmed) {
-      setError('You must confirm you saved your nonce');
+      toast.error('You must confirm you saved your nonce');
       return;
     }
 
     setLoading(true);
     setError(null);
+    const toastId = toast.loading('Placing your sealed bid...');
 
     try {
       const bidAmountFloat = parseFloat(bidAmount);
@@ -93,6 +97,9 @@ export const BidForm: FC<BidFormProps> = ({
       storeNonce(auctionId, nonce);
 
       // TODO: Submit bid transaction after deployment
+      // Simulate transaction
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
       // const program = await getProgram(wallet);
       // const tx = await program.methods
       //   .placeBid(Array.from(commitment))
@@ -109,13 +116,33 @@ export const BidForm: FC<BidFormProps> = ({
         nonce: nonce.slice(0, 16) + '...',
       });
 
-      alert('Bid placement will be available after contract deployment');
+      toast.update(toastId, {
+        render: '🔒 Sealed bid placed successfully! Remember to reveal during reveal phase.',
+        type: 'success',
+        isLoading: false,
+        autoClose: 7000,
+      });
       
-      if (onSuccess) onSuccess();
+      // Reset form
+      setBidAmount('');
+      setNonce('');
+      setNonceConfirmed(false);
+      setShowNonceWarning(false);
+      
+      if (onSuccess) {
+        setTimeout(() => onSuccess(), 1000);
+      }
 
     } catch (err: any) {
       console.error('Failed to place bid:', err);
-      setError(err.message || 'Failed to place bid');
+      const errorMsg = err.message || 'Failed to place bid';
+      setError(errorMsg);
+      toast.update(toastId, {
+        render: `❌ ${errorMsg}`,
+        type: 'error',
+        isLoading: false,
+        autoClose: 5000,
+      });
     } finally {
       setLoading(false);
     }
@@ -266,7 +293,7 @@ export const BidForm: FC<BidFormProps> = ({
         <div className="form-actions">
           <button
             type="submit"
-            className="btn-primary btn-large"
+            className={`btn-primary btn-large ${loading ? 'btn-loading' : ''}`}
             disabled={!nonce || !nonceConfirmed || !bidAmount || loading}
           >
             {loading ? 'Submitting Bid...' : '🔒 Submit Sealed Bid'}

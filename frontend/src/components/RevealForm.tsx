@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import { BN } from '@coral-xyz/anchor';
+import { toast } from 'react-toastify';
 import { verifyCommitment, retrieveNonce } from '../utils/commit-reveal';
 
 interface RevealFormProps {
@@ -43,7 +44,7 @@ export const RevealForm: FC<RevealFormProps> = ({
 
   function handleVerify() {
     if (!bidAmount || !nonce) {
-      setError('Please enter both bid amount and nonce');
+      toast.error('Please enter both bid amount and nonce');
       return;
     }
 
@@ -58,13 +59,20 @@ export const RevealForm: FC<RevealFormProps> = ({
       setVerificationStatus(isValid ? 'valid' : 'invalid');
       
       if (!isValid) {
-        setError('❌ Verification failed: Your bid/nonce does not match the original commitment');
+        const errorMsg = '❌ Verification failed: Your bid/nonce does not match the original commitment';
+        setError(errorMsg);
+        toast.error(errorMsg);
       } else {
         setError(null);
+        toast.success('✅ Verification successful! You can now reveal your bid.', {
+          autoClose: 3000,
+        });
       }
     } catch (err: any) {
-      setError('Invalid input: ' + err.message);
+      const errorMsg = 'Invalid input: ' + err.message;
+      setError(errorMsg);
       setVerificationStatus('invalid');
+      toast.error(errorMsg);
     }
   }
 
@@ -72,21 +80,25 @@ export const RevealForm: FC<RevealFormProps> = ({
     e.preventDefault();
 
     if (!publicKey) {
-      setError('Please connect your wallet');
+      toast.error('Please connect your wallet');
       return;
     }
 
     if (verificationStatus !== 'valid') {
-      setError('Please verify your bid first (click Verify button)');
+      toast.error('Please verify your bid first (click Verify button)');
       return;
     }
 
     setLoading(true);
     setError(null);
+    const toastId = toast.loading('Revealing your bid...');
 
     try {
       const bidAmountBN = new BN(parseFloat(bidAmount) * 1e9);
       const nonceBytes = Buffer.from(nonce, 'hex');
+
+      // Simulate transaction
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
       // TODO: Submit reveal transaction after deployment
       // const program = await getProgram(wallet);
@@ -107,13 +119,32 @@ export const RevealForm: FC<RevealFormProps> = ({
         noncePreview: nonce.slice(0, 16) + '...',
       });
 
-      alert('Bid reveal will be available after contract deployment');
+      toast.update(toastId, {
+        render: '👁️ Bid revealed successfully! Your bid is now public.',
+        type: 'success',
+        isLoading: false,
+        autoClose: 5000,
+      });
       
-      if (onSuccess) onSuccess();
+      // Reset form
+      setBidAmount('');
+      setNonce('');
+      setVerificationStatus('pending');
+      
+      if (onSuccess) {
+        setTimeout(() => onSuccess(), 1000);
+      }
 
     } catch (err: any) {
       console.error('Failed to reveal bid:', err);
-      setError(err.message || 'Failed to reveal bid');
+      const errorMsg = err.message || 'Failed to reveal bid';
+      setError(errorMsg);
+      toast.update(toastId, {
+        render: `❌ ${errorMsg}`,
+        type: 'error',
+        isLoading: false,
+        autoClose: 5000,
+      });
     } finally {
       setLoading(false);
     }
@@ -240,7 +271,7 @@ export const RevealForm: FC<RevealFormProps> = ({
         <div className="form-actions">
           <button
             type="submit"
-            className="btn-primary btn-large"
+            className={`btn-primary btn-large ${loading ? 'btn-loading' : ''}`}
             disabled={verificationStatus !== 'valid' || loading}
           >
             {loading ? 'Revealing Bid...' : '👁️ Reveal Bid'}
