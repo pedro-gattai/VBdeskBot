@@ -1,34 +1,101 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useWallet } from '@solana/wallet-adapter-react'
+import { WalletConnect } from './components/WalletConnect'
+import { AuctionList } from './components/AuctionList'
+import { CreateAuctionForm } from './components/CreateAuctionForm'
+import { BidForm } from './components/BidForm'
+import { RevealForm } from './components/RevealForm'
 import './App.css'
 
+type View = 'auctions' | 'create' | 'bid' | 'reveal'
+
 function App() {
-  const [count, setCount] = useState(0)
+  const { connected } = useWallet()
+  const [currentView, setCurrentView] = useState<View>('auctions')
+  const [selectedAuction, setSelectedAuction] = useState<string | null>(null)
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
+    <div className="app">
+      <header className="app-header">
+        <div className="header-content">
+          <div className="logo-section">
+            <h1>🎯 VB Desk</h1>
+            <p className="tagline">Vickrey-Boneh Sealed-Bid Auctions on Solana</p>
+          </div>
+          <WalletConnect />
+        </div>
+        
+        {connected && (
+          <nav className="main-nav">
+            <button
+              className={currentView === 'auctions' ? 'active' : ''}
+              onClick={() => setCurrentView('auctions')}
+            >
+              📋 Browse Auctions
+            </button>
+            <button
+              className={currentView === 'create' ? 'active' : ''}
+              onClick={() => setCurrentView('create')}
+            >
+              ➕ Create Auction
+            </button>
+          </nav>
+        )}
+      </header>
+
+      <main className="app-main">
+        {!connected ? (
+          <div className="connect-prompt">
+            <div className="prompt-card">
+              <h2>Welcome to VB Desk</h2>
+              <p>
+                A decentralized auction platform using Vickrey-Boneh sealed-bid 
+                auction protocol for privacy-preserving bidding on Solana.
+              </p>
+              <h3>How it works:</h3>
+              <ol>
+                <li><strong>Commit Phase:</strong> Bidders submit encrypted bids</li>
+                <li><strong>Reveal Phase:</strong> Bidders reveal their actual bids</li>
+                <li><strong>Winner Selection:</strong> Highest bidder wins, pays second-highest price</li>
+              </ol>
+              <p className="connect-instruction">
+                Connect your wallet to get started →
+              </p>
+            </div>
+          </div>
+        ) : (
+          <>
+            {currentView === 'auctions' && <AuctionList />}
+            {currentView === 'create' && (
+              <CreateAuctionForm 
+                onSuccess={() => setCurrentView('auctions')}
+              />
+            )}
+            {currentView === 'bid' && selectedAuction && (
+              <BidForm 
+                auctionAddress={selectedAuction}
+                onSuccess={() => setCurrentView('auctions')}
+              />
+            )}
+            {currentView === 'reveal' && selectedAuction && (
+              <RevealForm 
+                auctionAddress={selectedAuction}
+                onSuccess={() => setCurrentView('auctions')}
+              />
+            )}
+          </>
+        )}
+      </main>
+
+      <footer className="app-footer">
         <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
+          Built with ❤️ on Solana | 
+          <a href="https://github.com/yourusername/VBdeskBot" target="_blank" rel="noopener noreferrer">
+            GitHub
+          </a>
         </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+      </footer>
+    </div>
   )
 }
 
