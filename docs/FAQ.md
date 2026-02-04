@@ -1,5 +1,6 @@
-# FAQ - VB Desk
+# FAQ
 
-## Common questions and answers
+## Common Questions and Answers
 
-[To be completed]
+[List common questions and answers about VB Desk]
+

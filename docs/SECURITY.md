@@ -1,5 +1,14 @@
-# SECURITY - VB Desk
+# SECURITY GUIDE
 
-## Security considerations, best practices, audit checklist
+## Security Considerations
 
-[To be completed]
+[Discuss security considerations for VB Desk]
+
+## Best Practices
+
+[Outline best practices for using VB Desk securely]
+
+## Audit Checklist
+
+[Provide a checklist for auditing VB Desk]
+
