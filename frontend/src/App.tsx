@@ -3,16 +3,14 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletConnect } from './components/WalletConnect'
 import { AuctionList } from './components/AuctionList'
 import { CreateAuctionForm } from './components/CreateAuctionForm'
-import { BidForm } from './components/BidForm'
-import { RevealForm } from './components/RevealForm'
 import './App.css'
 
-type View = 'auctions' | 'create' | 'bid' | 'reveal'
+type View = 'auctions' | 'create'
 
 function App() {
   const { connected } = useWallet()
   const [currentView, setCurrentView] = useState<View>('auctions')
-  const [selectedAuction, setSelectedAuction] = useState<string | null>(null)
+  //const [selectedAuction, setSelectedAuction] = useState<string | null>(null)
 
   return (
     <div className="app">
@@ -71,18 +69,7 @@ function App() {
                 onSuccess={() => setCurrentView('auctions')}
               />
             )}
-            {currentView === 'bid' && selectedAuction && (
-              <BidForm 
-                auctionAddress={selectedAuction}
-                onSuccess={() => setCurrentView('auctions')}
-              />
-            )}
-            {currentView === 'reveal' && selectedAuction && (
-              <RevealForm 
-                auctionAddress={selectedAuction}
-                onSuccess={() => setCurrentView('auctions')}
-              />
-            )}
+            {/* Bid and Reveal forms will be added after contract integration */}
           </>
         )}
       </main>

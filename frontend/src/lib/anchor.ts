@@ -1,12 +1,13 @@
 import { Connection, PublicKey, clusterApiUrl } from '@solana/web3.js';
-import { AnchorProvider, Program } from '@coral-xyz/anchor';
-import { AnchorWallet } from '@solana/wallet-adapter-react';
+import { AnchorProvider, Program, type Idl } from '@coral-xyz/anchor';
+import type { AnchorWallet } from '@solana/wallet-adapter-react';
+import IDL from '../idl/vb_desk.json';
 
-// VB Desk Program ID (will be updated after devnet deployment)
-export const PROGRAM_ID = new PublicKey('11111111111111111111111111111111');
+// VB Desk Program ID (deployed to devnet)
+export const PROGRAM_ID = new PublicKey('AQN8iwxj5s9cupFA4bhaK7ccuCyN2fD7EH3ari3T3uXf');
 
-// Devnet RPC endpoint
-export const DEVNET_ENDPOINT = clusterApiUrl('devnet');
+// Devnet RPC endpoint (configurable via env)
+export const DEVNET_ENDPOINT = import.meta.env.VITE_RPC_ENDPOINT || clusterApiUrl('devnet');
 
 export function getProvider(wallet: AnchorWallet): AnchorProvider {
   const connection = new Connection(DEVNET_ENDPOINT, 'confirmed');
@@ -15,10 +16,7 @@ export function getProvider(wallet: AnchorWallet): AnchorProvider {
   });
 }
 
-export async function getProgram(wallet: AnchorWallet) {
+export function getProgram(wallet: AnchorWallet): Program {
   const provider = getProvider(wallet);
-  // IDL will be loaded after contract deployment
-  // const idl = await Program.fetchIdl(PROGRAM_ID, provider);
-  // return new Program(idl!, provider);
-  throw new Error('Program not yet deployed - update PROGRAM_ID after deployment');
+  return new Program(IDL as Idl, provider);
 }

@@ -1,0 +1,1013 @@
+{
+  "address": "AQN8iwxj5s9cupFA4bhaK7ccuCyN2fD7EH3ari3T3uXf",
+  "metadata": {
+    "name": "vb_desk",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Sealed-bid auction OTC trading platform on Solana"
+  },
+  "instructions": [
+    {
+      "name": "cancel_auction",
+      "docs": [
+        "Cancel an auction (only if no valid bids or before commit period ends)",
+        "Returns tokens to seller"
+      ],
+      "discriminator": [
+        156,
+        43,
+        197,
+        110,
+        218,
+        105,
+        143,
+        182
+      ],
+      "accounts": [
+        {
+          "name": "auction",
+          "writable": true
+        },
+        {
+          "name": "seller",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "escrow_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "auction"
+              }
+            ]
+          }
+        },
+        {
+          "name": "seller_token_account",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "complete_trade",
+      "docs": [
+        "Complete the trade between winner and seller",
+        "Winner receives tokens, seller receives SOL"
+      ],
+      "discriminator": [
+        110,
+        126,
+        235,
+        45,
+        59,
+        46,
+        215,
+        13
+      ],
+      "accounts": [
+        {
+          "name": "auction",
+          "writable": true
+        },
+        {
+          "name": "winning_bid",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  105,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "auction"
+              },
+              {
+                "kind": "account",
+                "path": "winning_bid.bidder",
+                "account": "Bid"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "auction"
+              }
+            ]
+          }
+        },
+        {
+          "name": "winner_token_account",
+          "writable": true
+        },
+        {
+          "name": "seller",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_auction",
+      "docs": [
+        "Create a new OTC auction",
+        "Seller deposits tokens into escrow and sets auction parameters"
+      ],
+      "discriminator": [
+        234,
+        6,
+        201,
+        246,
+        47,
+        219,
+        176,
+        107
+      ],
+      "accounts": [
+        {
+          "name": "auction",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  117,
+                  99,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "seller"
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "seller",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "token_mint"
+        },
+        {
+          "name": "seller_token_account",
+          "writable": true
+        },
+        {
+          "name": "escrow_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "auction"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "min_price",
+          "type": "u64"
+        },
+        {
+          "name": "commit_end_time",
+          "type": "i64"
+        },
+        {
+          "name": "reveal_end_time",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "finalize_auction",
+      "docs": [
+        "Finalize the auction and determine the winner",
+        "Can be called by anyone after reveal period ends"
+      ],
+      "discriminator": [
+        220,
+        209,
+        175,
+        193,
+        57,
+        132,
+        241,
+        168
+      ],
+      "accounts": [
+        {
+          "name": "auction",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "place_bid",
+      "docs": [
+        "Place a sealed bid",
+        "Bidder commits hash(price || salt) and deposits SOL equal to their bid"
+      ],
+      "discriminator": [
+        238,
+        77,
+        148,
+        91,
+        200,
+        151,
+        92,
+        146
+      ],
+      "accounts": [
+        {
+          "name": "auction"
+        },
+        {
+          "name": "bid",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  105,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "auction"
+              },
+              {
+                "kind": "account",
+                "path": "bidder"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bidder",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "commitment",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "bid_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "reveal_bid",
+      "docs": [
+        "Reveal a previously committed bid",
+        "Bidder proves their commitment by revealing price and salt"
+      ],
+      "discriminator": [
+        48,
+        73,
+        28,
+        255,
+        202,
+        126,
+        236,
+        196
+      ],
+      "accounts": [
+        {
+          "name": "auction"
+        },
+        {
+          "name": "bid",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  105,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "auction"
+              },
+              {
+                "kind": "account",
+                "path": "bidder"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bidder",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "price",
+          "type": "u64"
+        },
+        {
+          "name": "salt",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "withdraw_bid",
+      "docs": [
+        "Withdraw a losing bid or failed auction bid",
+        "Returns SOL to bidder if they didn't win"
+      ],
+      "discriminator": [
+        110,
+        53,
+        157,
+        195,
+        147,
+        100,
+        110,
+        73
+      ],
+      "accounts": [
+        {
+          "name": "auction"
+        },
+        {
+          "name": "bid",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  105,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "auction"
+              },
+              {
+                "kind": "account",
+                "path": "bidder"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bidder",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Auction",
+      "discriminator": [
+        218,
+        94,
+        247,
+        242,
+        126,
+        233,
+        131,
+        81
+      ]
+    },
+    {
+      "name": "Bid",
+      "discriminator": [
+        143,
+        246,
+        48,
+        245,
+        42,
+        145,
+        180,
+        88
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "AuctionCancelled",
+      "discriminator": [
+        22,
+        32,
+        51,
+        83,
+        215,
+        194,
+        171,
+        209
+      ]
+    },
+    {
+      "name": "AuctionCreated",
+      "discriminator": [
+        133,
+        190,
+        194,
+        65,
+        172,
+        0,
+        70,
+        178
+      ]
+    },
+    {
+      "name": "AuctionFinalized",
+      "discriminator": [
+        136,
+        160,
+        117,
+        237,
+        77,
+        211,
+        136,
+        28
+      ]
+    },
+    {
+      "name": "BidPlaced",
+      "discriminator": [
+        135,
+        53,
+        176,
+        83,
+        193,
+        69,
+        108,
+        61
+      ]
+    },
+    {
+      "name": "BidRevealed",
+      "discriminator": [
+        227,
+        144,
+        125,
+        229,
+        28,
+        109,
+        18,
+        209
+      ]
+    },
+    {
+      "name": "BidWithdrawn",
+      "discriminator": [
+        145,
+        195,
+        97,
+        230,
+        166,
+        54,
+        74,
+        206
+      ]
+    },
+    {
+      "name": "TradeCompleted",
+      "discriminator": [
+        17,
+        150,
+        110,
+        151,
+        166,
+        23,
+        143,
+        234
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidAmount",
+      "msg": "Invalid amount specified"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidPrice",
+      "msg": "Invalid price specified"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidDeadline",
+      "msg": "Invalid deadline specified"
+    },
+    {
+      "code": 6003,
+      "name": "AuctionNotActive",
+      "msg": "Auction is not active"
+    },
+    {
+      "code": 6004,
+      "name": "CommitPeriodEnded",
+      "msg": "Commit period has ended"
+    },
+    {
+      "code": 6005,
+      "name": "CommitPeriodNotEnded",
+      "msg": "Commit period has not ended yet"
+    },
+    {
+      "code": 6006,
+      "name": "RevealPeriodEnded",
+      "msg": "Reveal period has ended"
+    },
+    {
+      "code": 6007,
+      "name": "RevealPeriodNotEnded",
+      "msg": "Reveal period has not ended yet"
+    },
+    {
+      "code": 6008,
+      "name": "BidBelowMinimum",
+      "msg": "Bid below minimum price"
+    },
+    {
+      "code": 6009,
+      "name": "AlreadyRevealed",
+      "msg": "Bid already revealed"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidReveal",
+      "msg": "Invalid reveal - commitment doesn't match"
+    },
+    {
+      "code": 6011,
+      "name": "DepositMismatch",
+      "msg": "Deposited amount doesn't match revealed price"
+    },
+    {
+      "code": 6012,
+      "name": "AuctionNotFinalized",
+      "msg": "Auction not finalized"
+    },
+    {
+      "code": 6013,
+      "name": "InvalidBid",
+      "msg": "Invalid bid for this auction"
+    },
+    {
+      "code": 6014,
+      "name": "BidNotRevealed",
+      "msg": "Bid has not been revealed"
+    },
+    {
+      "code": 6015,
+      "name": "AuctionNotFinished",
+      "msg": "Auction not finished"
+    },
+    {
+      "code": 6016,
+      "name": "CannotWithdrawWinningBid",
+      "msg": "Cannot withdraw winning bid"
+    },
+    {
+      "code": 6017,
+      "name": "Unauthorized",
+      "msg": "Unauthorized"
+    },
+    {
+      "code": 6018,
+      "name": "CannotCancel",
+      "msg": "Cannot cancel auction at this time"
+    }
+  ],
+  "types": [
+    {
+      "name": "Auction",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "seller",
+            "docs": [
+              "Seller who created the auction"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "token_mint",
+            "docs": [
+              "Token mint being sold"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Amount of tokens being sold"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "min_price",
+            "docs": [
+              "Minimum acceptable price (in lamports)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "commit_end_time",
+            "docs": [
+              "Unix timestamp when commit period ends"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "reveal_end_time",
+            "docs": [
+              "Unix timestamp when reveal period ends"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "docs": [
+              "Current auction status"
+            ],
+            "type": {
+              "defined": {
+                "name": "AuctionStatus"
+              }
+            }
+          },
+          {
+            "name": "winning_bid",
+            "docs": [
+              "Winning bid (if any)"
+            ],
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "PDA bump seed"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AuctionCancelled",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "auction",
+            "type": "pubkey"
+          },
+          {
+            "name": "seller",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AuctionCreated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "auction",
+            "type": "pubkey"
+          },
+          {
+            "name": "seller",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "min_price",
+            "type": "u64"
+          },
+          {
+            "name": "commit_end_time",
+            "type": "i64"
+          },
+          {
+            "name": "reveal_end_time",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AuctionFinalized",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "auction",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AuctionStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Finalized"
+          },
+          {
+            "name": "Completed"
+          },
+          {
+            "name": "Cancelled"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Bid",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "auction",
+            "docs": [
+              "Auction this bid is for"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "bidder",
+            "docs": [
+              "Bidder's public key"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "commitment",
+            "docs": [
+              "Commitment hash(price || salt)"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "revealed_price",
+            "docs": [
+              "Revealed price (None until revealed)"
+            ],
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "deposited_amount",
+            "docs": [
+              "Amount of SOL deposited"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "PDA bump seed"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BidPlaced",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "auction",
+            "type": "pubkey"
+          },
+          {
+            "name": "bidder",
+            "type": "pubkey"
+          },
+          {
+            "name": "commitment",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "deposited_amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BidRevealed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "auction",
+            "type": "pubkey"
+          },
+          {
+            "name": "bidder",
+            "type": "pubkey"
+          },
+          {
+            "name": "price",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BidWithdrawn",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "auction",
+            "type": "pubkey"
+          },
+          {
+            "name": "bidder",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TradeCompleted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "auction",
+            "type": "pubkey"
+          },
+          {
+            "name": "winner",
+            "type": "pubkey"
+          },
+          {
+            "name": "seller",
+            "type": "pubkey"
+          },
+          {
+            "name": "price",
+            "type": "u64"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ]
+}

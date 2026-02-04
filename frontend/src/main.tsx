@@ -11,8 +11,11 @@ import App from './App.tsx'
 import '@solana/wallet-adapter-react-ui/styles.css'
 
 function Root() {
-  // Use devnet for development
-  const endpoint = useMemo(() => clusterApiUrl('devnet'), [])
+  // Use configured RPC endpoint or default to devnet
+  const endpoint = useMemo(() => 
+    import.meta.env.VITE_RPC_ENDPOINT || clusterApiUrl('devnet'), 
+    []
+  )
   const wallets = useMemo(() => [new PhantomWalletAdapter()], [])
 
   return (
