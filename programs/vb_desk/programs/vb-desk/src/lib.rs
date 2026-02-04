@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Token, TokenAccount, Transfer};
 use sha2::{Sha256, Digest};
 
-declare_id!("11111111111111111111111111111111");
+declare_id!("GHMkvLYFpn5DN1LPPax94e2HdmAp6CFV17fgbHXYHSnF");
 
 /// VB Desk - Sealed-bid Auction Smart Contract
 /// Implements 5 core instructions for conducting sealed-bid auctions on Solana
