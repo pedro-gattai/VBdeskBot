@@ -1,7 +1,9 @@
 use anchor_lang::prelude::*;
+use anchor_lang::system_program::System;
 use anchor_spl::token::{self, Token, TokenAccount, Transfer, Mint};
+use sha2::{Sha256, Digest};
 
-declare_id!("VBDesk11111111111111111111111111111111111111");
+declare_id!("AQN8iwxj5s9cupFA4bhaK7ccuCyN2fD7EH3ari3T3uXf");
 
 #[program]
 pub mod vb_desk {
@@ -120,13 +122,13 @@ pub mod vb_desk {
         require!(bid.revealed_price.is_none(), AuctionError::AlreadyRevealed);
 
         // Verify commitment: hash(price || salt) == commitment
-        let mut data = Vec::new();
-        data.extend_from_slice(&price.to_le_bytes());
-        data.extend_from_slice(&salt);
-        let computed_hash = anchor_lang::solana_program::hash::hash(&data);
+        let mut hasher = Sha256::new();
+        hasher.update(&price.to_le_bytes());
+        hasher.update(salt);
+        let computed_hash: [u8; 32] = hasher.finalize().into();
         
         require!(
-            computed_hash.to_bytes() == bid.commitment,
+            computed_hash == bid.commitment,
             AuctionError::InvalidReveal
         );
 
@@ -207,13 +209,14 @@ pub mod vb_desk {
         token::transfer(cpi_ctx, auction.amount)?;
 
         // Transfer SOL from winning bid PDA to seller
+        let auction_key = auction.key();
         let bid_seeds = &[
             b"bid",
-            auction.key().as_ref(),
+            auction_key.as_ref(),
             winning_bid.bidder.as_ref(),
             &[winning_bid.bump],
         ];
-        let bid_signer = &[&bid_seeds[..]];
+        let _bid_signer = &[&bid_seeds[..]];
 
         **winning_bid.to_account_info().try_borrow_mut_lamports()? -= winning_price;
         **ctx.accounts.seller.to_account_info().try_borrow_mut_lamports()? += winning_price;
@@ -252,13 +255,14 @@ pub mod vb_desk {
         }
 
         // Transfer SOL back to bidder
+        let auction_key = auction.key();
         let seeds = &[
             b"bid",
-            auction.key().as_ref(),
+            auction_key.as_ref(),
             bid.bidder.as_ref(),
             &[bid.bump],
         ];
-        let signer = &[&seeds[..]];
+        let _signer = &[&seeds[..]];
 
         let amount = bid.deposited_amount;
         **bid.to_account_info().try_borrow_mut_lamports()? -= amount;
