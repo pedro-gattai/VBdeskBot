@@ -1,11 +1,54 @@
-# React + TypeScript + Vite
+# VB Desk - Private OTC trading for everyone! 🗳️
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project provides a user interface for private Over-The-Counter (OTC) trading.
 
-Currently, two official plugins are available:
+## Setup Instructions
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1.  **Clone the repository:**
+
+    ```bash
+    git clone <repository_url>
+    cd frontend
+    ```
+
+2.  **Install dependencies:**
+
+    ```bash
+    npm install
+    ```
+
+3.  **Configure environment variables:**
+
+    *   Create a `.env` file in the root directory.
+    *   Add the necessary environment variables (e.g., API keys, network configurations).  Example:
+
+        ```
+        VITE_API_URL=your_api_endpoint
+        VITE_NETWORK=mainnet
+        ```
+
+4.  **Start the development server:**
+
+    ```bash
+    npm run dev
+    ```
+
+    This will start the application in development mode, usually at `http://localhost:5173`.
+
+## Feature Overview
+
+*   **Wallet Connection:**  Connect to your preferred Web3 wallet (e.g., MetaMask, WalletConnect).
+*   **Auction Creation:**  Create new OTC trading auctions with specific terms.
+*   **Bidding:**  Participate in auctions by placing bids.
+*   **Reveal:**  Reveal your trade after the auction ends.
+*   **Auction Listing:**  Browse and filter available auctions.
+
+## Technology Stack
+
+*   React
+*   TypeScript
+*   Vite
+*   [Add any other relevant libraries/frameworks here]
 
 ## React Compiler
 

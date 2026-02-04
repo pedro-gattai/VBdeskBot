@@ -13,10 +13,38 @@
 
 import * as anchor from "@project-serum/anchor";
 import { Program } from "@project-serum/anchor";
-import { PublicKey } from "@solana/web3.js";
+import { PublicKey, SystemProgram, Keypair } from "@solana/web3.js";
+import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { createMint, getOrCreateAssociatedTokenAccount } from '@solana/spl-token';
+import { assert } from "chai";
 
 describe("VB Desk Core Contract Tests", () => {
-  // Placeholder for test setup
+  const provider = anchor.AnchorProvider.env();
+  anchor.setProvider(provider);
+
+  const program = anchor.workspace.VbDesk as Program;
+
+  let seller: Keypair;
+  let assetMint: PublicKey;
+  let sellerTokenAccount: PublicKey;
+
+    before(async () => {
+    seller = Keypair.generate();
+    assetMint = await createMint(
+      provider.connection,
+      seller,
+      seller.publicKey,
+      null,
+      6
+    );
+
+    sellerTokenAccount = await getOrCreateAssociatedTokenAccount(
+      provider.connection,
+      seller,
+      assetMint,
+      seller.publicKey
+    ).then(account => account.address);
+  });
   // Tests to be implemented as contract is built
 
   describe("Instruction: create_auction", () => {

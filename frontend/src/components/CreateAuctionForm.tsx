@@ -3,10 +3,14 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import { BN } from '@coral-xyz/anchor';
 
+/**
+ * Component for creating a new auction.
+ */
 export const CreateAuctionForm: FC = () => {
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
 
+  // State variables for form inputs
   const [sellingTokenMint, setSellingTokenMint] = useState('');
   const [buyingTokenMint, setBuyingTokenMint] = useState('');
   const [sellingAmount, setSellingAmount] = useState('');
@@ -17,6 +21,10 @@ export const CreateAuctionForm: FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  /**
+   * Handles form submission.
+   * @param e Form event
+   */
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     
@@ -32,6 +40,26 @@ export const CreateAuctionForm: FC = () => {
       // Validate inputs
       if (!sellingTokenMint || !buyingTokenMint) {
         throw new Error('Please enter both token mint addresses');
+      }
+
+      // Validate mint addresses are valid public keys
+      try {
+        new PublicKey(sellingTokenMint);
+        new PublicKey(buyingTokenMint);
+      } catch {
+        throw new Error('Invalid mint address');
+      }
+
+      if (isNaN(parseFloat(sellingAmount)) || parseFloat(sellingAmount) <= 0) {
+        throw new Error('Selling amount must be a positive number');
+      }
+
+      if (isNaN(parseFloat(reservePrice)) || parseFloat(reservePrice) <= 0) {
+        throw new Error('Reserve price must be a positive number');
+      }
+
+      if (isNaN(parseFloat(minBidDeposit)) || parseFloat(minBidDeposit) <= 0) {
+        throw new Error('Minimum bid deposit must be a positive number');
       }
 
       const sellingMint = new PublicKey(sellingTokenMint);
@@ -75,6 +103,11 @@ export const CreateAuctionForm: FC = () => {
     }
   }
 
+  /**
+   * Formats duration in seconds to HHh MMm format.
+   * @param seconds Duration in seconds
+   * @returns Formatted duration string
+   */
   function formatDuration(seconds: number): string {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);

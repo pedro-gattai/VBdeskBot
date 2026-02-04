@@ -12,6 +12,9 @@ interface BidFormProps {
   onSuccess?: () => void;
 }
 
+/**
+ * Component for placing a sealed bid in an auction.
+ */
 export const BidForm: FC<BidFormProps> = ({
   auctionPublicKey,
   auctionId,
@@ -22,6 +25,7 @@ export const BidForm: FC<BidFormProps> = ({
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
 
+  // State variables for form inputs and UI
   const [bidAmount, setBidAmount] = useState('');
   const [nonce, setNonce] = useState<string>('');
   const [showNonceWarning, setShowNonceWarning] = useState(false);
@@ -29,17 +33,27 @@ export const BidForm: FC<BidFormProps> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  /**
+   * Generates a new random nonce.
+   */
   function handleGenerateNonce() {
     const newNonce = generateNonce();
     setNonce(newNonce);
     setShowNonceWarning(true);
   }
 
+  /**
+   * Copies the nonce to the clipboard.
+   */
   function handleCopyNonce() {
     navigator.clipboard.writeText(nonce);
     alert('Nonce copied to clipboard! Save it in your password manager NOW.');
   }
 
+  /**
+   * Handles form submission.
+   * @param e Form event
+   */
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
@@ -59,6 +73,11 @@ export const BidForm: FC<BidFormProps> = ({
     try {
       const bidAmountFloat = parseFloat(bidAmount);
       
+      // Validate bid amount
+      if (isNaN(bidAmountFloat) || bidAmountFloat <= 0) {
+        throw new Error('Bid amount must be a positive number');
+      }
+
       if (bidAmountFloat < reservePrice) {
         throw new Error(`Bid must be at least ${reservePrice} (reserve price)`);
       }
