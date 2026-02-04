@@ -5,6 +5,7 @@ import { PublicKey } from '@solana/web3.js';
 import { BN } from '@coral-xyz/anchor';
 import { toast } from 'react-toastify';
 import { generateNonce, createCommitment, storeNonce } from '../utils/commit-reveal';
+import { Tooltip } from './Tooltip';
 
 interface BidFormProps {
   auctionPublicKey: PublicKey;
@@ -166,8 +167,8 @@ export const BidForm: FC<BidFormProps> = ({
         <p>ℹ️ <strong>How Sealed Bids Work:</strong></p>
         <ol>
           <li>Enter your bid amount (hidden from others)</li>
-          <li>Generate a random nonce (secret key)</li>
-          <li>Submit a cryptographic commitment (SHA-256 hash)</li>
+          <li>Generate a random <Tooltip content="A random 32-byte secret that makes your commitment unique">nonce</Tooltip> (secret key)</li>
+          <li>Submit a cryptographic <Tooltip content="SHA-256 hash of your bid + nonce. Proves you made a bid without revealing the amount.">commitment</Tooltip> (SHA-256 hash)</li>
           <li>After commit phase ends, reveal your bid using the nonce</li>
         </ol>
         <p><strong>Nobody can see your bid amount until reveal phase!</strong></p>

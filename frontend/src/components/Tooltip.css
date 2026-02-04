@@ -1,0 +1,111 @@
+/* Tooltip Component */
+
+.tooltip-wrapper {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+  border-bottom: 1px dotted var(--color-text-tertiary);
+}
+
+.tooltip-content {
+  position: absolute;
+  z-index: 1000;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  white-space: nowrap;
+  box-shadow: var(--shadow-lg);
+  pointer-events: none;
+  animation: tooltip-fade-in 0.2s ease-out;
+}
+
+@keyframes tooltip-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Position variants */
+.tooltip-top {
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tooltip-bottom {
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tooltip-left {
+  right: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.tooltip-right {
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Arrow */
+.tooltip-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+}
+
+.tooltip-top .tooltip-arrow {
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-top-color: var(--color-bg-card);
+}
+
+.tooltip-bottom .tooltip-arrow {
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-bottom-color: var(--color-bg-card);
+}
+
+.tooltip-left .tooltip-arrow {
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-left-color: var(--color-bg-card);
+}
+
+.tooltip-right .tooltip-arrow {
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-right-color: var(--color-bg-card);
+}
+
+/* Mobile - convert to always-visible on small screens */
+@media (max-width: 768px) {
+  .tooltip-content {
+    white-space: normal;
+    max-width: 200px;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .tooltip-content {
+    animation: none;
+  }
+}
